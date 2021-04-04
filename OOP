@@ -1,0 +1,50 @@
+C++ Object Oriented Programming.
+
+OOP came out around 1980s for better use of codes including variables and functions.
+
+C had struct which was only used for a business card form.
+
+There is no action, behavior, or event in struct unlike class.
+
+Class is a blueprint and object is an actual product(e.g house) based on the blueprint.
+
+Class has member variable, member function, non-member function, constructor, destructor, etc.
+
+member variable can be either public or private.
+
+Public member variable can be accessed and modified by codes from any other places,
+
+but private member variable only can be accessed or modified by codes inside the class.
+
+**This is the reason why we need to make accessor(getter) and mutator(setter).
+
+In default, it is highly recommended to make all members in private to prevent any misuses of the class by other users.
+
+member function can acceses or modify member variable, but it is recommended to use non-member function as accessor or mutator for the most times.
+
+function can be overloaded (can have same name but with different parameters)
+
+function can have class type parameter.
+
+function may return object.
+
+
+Constructor is base setting that all objects share under the class.
+
+There can be multiple constructors in the class.
+
+Automatically, compiler create constructor without any parameter.
+
+If there is a specifically defined constructor without any parameter, then compiler use the defined one.
+
+
+
+Big 3 solution[Destructor, Copy object, Deep copy] for memory leak.
+
+Any dynamic array or manually handled or invoked memory must be destroyed as the designer created.
+
+When it comes to reassign the memory, all 3 solutions must come together.
+
+There is no case that only one or two are used.
+
+**TODO add more example codes and details later
