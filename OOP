@@ -60,4 +60,186 @@ public:
 	Elephant& operator=(const Elephant& rhs); //must be a member of the class
 };
 
+
+//new account balance = old balance + all deposits - all cashed checks
+
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+
+class Money {
+public:
+	double all_cents;
+public:
+	friend Money operator+(const Money& amount1, const Money& amount2);
+
+	friend Money operator-(const Money& amount1, const Money& amount2);
+
+	Money operator-(const Money& amount) const;
+
+	friend bool operator==(const Money& amoun1, const Money& amount2);
+
+	friend bool operator<(const Money& amount1, const Money& amount2);
+
+	Money(double all_cents) : all_cents(all_cents) {}
+
+	Money();
+
+	double get_value() const { return all_cents; }
+	friend istream& operator>>(istream& ins, Money& amount);
+
+	friend ostream& operator<<(ostream& outs, const Money& amount);
+};
+
+Money operator+(const Money& amount1, const Money& amount2) { Money temp(amount1.get_value() + amount2.get_value()); return temp; }
+
+Money operator-(const Money& amount1, const Money& amount2) { Money temp(amount1.get_value() - amount2.get_value()); return temp; }
+
+Money Money::operator-(const Money& amount) const {
+	Money temp(all_cents - amount.get_value());
+	return temp;
+}
+
+bool operator==(const Money& amount1, const Money& amount2) { return amount1.get_value() == amount2.get_value(); }
+
+bool operator<(const Money& amount1, const Money& amount2) { return amount1.get_value() < amount2.get_value(); }
+
+
+ostream& operator<<(ostream& outs, const Money& amount) {
+	outs << amount.get_value() << "\"";
+	return outs;
+}
+
+class Check {
+	int id;
+	bool isCheckCashed = false;
+	Money amount;
+
+	Check() : id(1), isCheckCashed(false), amount(0){}
+	Check(int numCheck, bool isCheckCashed, Money amount) : id(numCheck), isCheckCashed(isCheckCashed), amount(amount) {}
+
+public:
+	int getId() {return id;}
+	void setId(int newId) { id = newId; }
+	Money getTotal(const Money& amount) { return this->amount.get_value(); }
+	void setTotal(const Money& amount);
+	bool isChecked() { return isCheckCashed; }
+    void setIsChecked(char num) { isCheckCashed = num; }
+	friend Check operator<(const Check& one, const Check& other);
+	friend istream& operator>>(istream& ins, Check& check);
+};
+void Check::setTotal(const Money& amount) {
+	this->amount = amount;
+}
+
+istream& operator>>(istream& ins, Check& check) {
+	char one_char, cashed;
+	double all_cents = 0;
+	bool negative = false;;
+
+	ins >> one_char;
+	check.setId(one_char);
+
+	ins >> one_char;
+	ins >> one_char;
+	if (one_char == '-')
+	{
+		negative = true;
+		ins >> one_char;
+	}
+
+	else
+		ins >> one_char; //skip '$'
+		ins >> all_cents;
+	check.amount.all_cents = all_cents;
+	if (negative)
+	check.amount.all_cents = -all_cents;
+
+	ins >> cashed;
+
+	check.setIsChecked(cashed);
+
+	return ins;
+}
+
+
+int main() {
+	double all_cents;
+	int numOfDeposits;
+	vector<string> deposits;
+	string deposit;
+	double doubleDeposit;
+	string inCheck;
+	int numChecks;
+	vector<string> temp;
+	vector<Check> checks;
+	Check check();
+	
+	cout << "Please enter your current bank balance ($##.##): " << endl;
+	//$50.00
+	cin >> all_cents;
+	
+	Money newBalance(all_cents);
+	cout << "Please enter your old bank balance ($##.##): " << endl;
+	//$32.00
+	cin >> all_cents;
+	Money oldBalance(all_cents);
+	cout << "Please enter how many deposits you have (#): " << endl;
+	// 5
+	cin >> numOfDeposits;
+	cout << "Please enter deposits, one per line ($##.##): " << endl;
+	/*
+	$3.23
+	$32.42
+	$11.42
+	-$31.41
+	$14.23
+	*/
+	for (int i = 0; i < numOfDeposits; i++) {
+		cin >> deposit;
+		if (deposit[0] == '$') {
+			deposit.erase(remove(deposit.begin(), deposit.end(), '$'), deposit.end());
+		}
+		doubleDeposit = stod(deposit);
+		deposits.push_back(deposit);
+	}
+	cout << "Please enter how many checks you have for processing (#): " << endl;
+	//2
+	cin >> numChecks;
+	cout << "Please enter checks, one per line." << endl;
+
+	for (int i = 0; i < numChecks; i++) {
+		operator>>amount
+	}
+
+	cout << "Format is (# $##.## #)." << endl;
+
+	cout << "Where first number is id, second is amount, third is a 0 if not cashed, 1 if cashed." << endl;
+	//3 $13.31 0
+	//4 $20.30 1
+
+
+
+
+	cout << "Total value of checks cashed: " << endl;
+	//$20.30
+	cout << "Total value of all deposits made: " << endl;
+	//$29.89
+	cout << "New balance should be: " << endl;
+	//$41.59
+	cout << "Difference from bank balance is: " << endl;
+	//$8.41
+	cout << "List of all cashed checks: " << endl;
+
+	cout << "Id \t Amount \t Cashed status" << endl;
+	//4 \t $20.30 \t 1
+	cout << "List of all non-cashed checks:" << endl;
+
+	cout << "Id \t Amount \t Cashed status" << endl;
+	//3 \t $13.31 \t 0
+
+}
+
 **TODO add more example codes and details later
