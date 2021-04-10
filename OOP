@@ -62,6 +62,7 @@ public:
 
 
 //new account balance = old balance + all deposits - all cashed checks
+//new account balance = old balance + all deposits - all cashed checks
 
 #include<iostream>
 #include<string>
@@ -73,7 +74,7 @@ class Money {
 public:
 	double all_cents;
 public:
-	friend Money operator+(const Money& amount1, const Money& amount2);
+	Money operator+(const Money& amount) const;
 
 	friend Money operator-(const Money& amount1, const Money& amount2);
 
@@ -85,15 +86,19 @@ public:
 
 	Money(double all_cents) : all_cents(all_cents) {}
 
-	Money();
+	Money() : all_cents(0) {}
 
 	double get_value() const { return all_cents; }
-	friend istream& operator>>(istream& ins, Money& amount);
 
+	friend istream& operator>>(istream& ins, Money& money);
+	
 	friend ostream& operator<<(ostream& outs, const Money& amount);
 };
 
-Money operator+(const Money& amount1, const Money& amount2) { Money temp(amount1.get_value() + amount2.get_value()); return temp; }
+Money Money::operator+(const Money& amount) const {
+	Money temp(all_cents + amount.get_value()); 
+	return temp; 
+}
 
 Money operator-(const Money& amount1, const Money& amount2) { Money temp(amount1.get_value() - amount2.get_value()); return temp; }
 
@@ -106,9 +111,8 @@ bool operator==(const Money& amount1, const Money& amount2) { return amount1.get
 
 bool operator<(const Money& amount1, const Money& amount2) { return amount1.get_value() < amount2.get_value(); }
 
-
 ostream& operator<<(ostream& outs, const Money& amount) {
-	outs << amount.get_value() << "\"";
+	outs << "$" << amount.get_value();
 	return outs;
 }
 
@@ -116,78 +120,73 @@ class Check {
 	int id;
 	bool isCheckCashed = false;
 	Money amount;
-
-	Check() : id(1), isCheckCashed(false), amount(0){}
+public:
+	Check() : id(0), isCheckCashed(false), amount(0){}
 	Check(int numCheck, bool isCheckCashed, Money amount) : id(numCheck), isCheckCashed(isCheckCashed), amount(amount) {}
 
 public:
 	int getId() {return id;}
 	void setId(int newId) { id = newId; }
-	Money getTotal(const Money& amount) { return this->amount.get_value(); }
+	double getTotal() { return this->amount.get_value(); }
 	void setTotal(const Money& amount);
 	bool isChecked() { return isCheckCashed; }
     void setIsChecked(char num) { isCheckCashed = num; }
-	friend Check operator<(const Check& one, const Check& other);
 	friend istream& operator>>(istream& ins, Check& check);
+	friend Check operator<(const Check& one, const Check& other);
 };
 void Check::setTotal(const Money& amount) {
 	this->amount = amount;
 }
 
 istream& operator>>(istream& ins, Check& check) {
-	char one_char, cashed;
-	double all_cents = 0;
-	bool negative = false;;
-
-	ins >> one_char;
-	check.setId(one_char);
-
-	ins >> one_char;
-	ins >> one_char;
-	if (one_char == '-')
-	{
-		negative = true;
-		ins >> one_char;
+	char oneChar;
+	ins >> check.id;
+	ins >> oneChar;
+	if (oneChar == ' ' || oneChar == '$') {
+		//skip the char
 	}
-
-	else
-		ins >> one_char; //skip '$'
-		ins >> all_cents;
-	check.amount.all_cents = all_cents;
-	if (negative)
-	check.amount.all_cents = -all_cents;
-
-	ins >> cashed;
-
-	check.setIsChecked(cashed);
-
+	ins >> check.amount.all_cents;
+	ins >> check.isCheckCashed;
 	return ins;
 }
 
 
 int main() {
 	double all_cents;
+	string input;
 	int numOfDeposits;
+	bool negative = false;
 	vector<string> deposits;
 	string deposit;
 	double doubleDeposit;
-	string inCheck;
+	double totalDeposits = 0;
+	double cashedChecks = 0;
 	int numChecks;
 	vector<string> temp;
 	vector<Check> checks;
-	Check check();
+	Check currCheck;
+	 
 	
 	cout << "Please enter your current bank balance ($##.##): " << endl;
-	//$50.00
-	cin >> all_cents;
+	//$100.00
+	cin >> input;
+	if (input[0] == '$') {
+		input.erase(remove(input.begin(), input.end(), '$'), input.end());
+	}
+	all_cents = stod(input);
 	
-	Money newBalance(all_cents);
+	Money currentBalance(all_cents);
 	cout << "Please enter your old bank balance ($##.##): " << endl;
-	//$32.00
-	cin >> all_cents;
+	//$64.00
+	cin >> input;
+	if (input[0] == '$') {
+		input.erase(remove(input.begin(), input.end(), '$'), input.end());
+	}
+	all_cents = stod(input);
+
 	Money oldBalance(all_cents);
 	cout << "Please enter how many deposits you have (#): " << endl;
-	// 5
+	// 4
 	cin >> numOfDeposits;
 	cout << "Please enter deposits, one per line ($##.##): " << endl;
 	/*
@@ -195,51 +194,79 @@ int main() {
 	$32.42
 	$11.42
 	-$31.41
-	$14.23
 	*/
 	for (int i = 0; i < numOfDeposits; i++) {
 		cin >> deposit;
+		if (deposit[0] == '-') {
+			deposit.erase(remove(deposit.begin(), deposit.end(), '-'), deposit.end());
+			negative = true;
+		}
 		if (deposit[0] == '$') {
 			deposit.erase(remove(deposit.begin(), deposit.end(), '$'), deposit.end());
 		}
 		doubleDeposit = stod(deposit);
+		if (negative == true) {
+			doubleDeposit = -doubleDeposit;
+		}
+		totalDeposits += doubleDeposit;
 		deposits.push_back(deposit);
+		negative = false;
 	}
 	cout << "Please enter how many checks you have for processing (#): " << endl;
-	//2
+	//3
 	cin >> numChecks;
 	cout << "Please enter checks, one per line." << endl;
-
-	for (int i = 0; i < numChecks; i++) {
-		operator>>amount
-	}
 
 	cout << "Format is (# $##.## #)." << endl;
 
 	cout << "Where first number is id, second is amount, third is a 0 if not cashed, 1 if cashed." << endl;
-	//3 $13.31 0
-	//4 $20.30 1
+	//1 $12.31 1
+	//2 $37.20 0
+	//3 $15.42 1
 
-
-
+	for (int i = 0; i < numChecks; i++) {
+		cin >> currCheck;
+	    checks.push_back(currCheck);
+	}
 
 	cout << "Total value of checks cashed: " << endl;
-	//$20.30
+	//$27.73
+	for (int i = 0; i < numChecks; i++) {
+		if (checks[i].isChecked() == 1) {
+			cashedChecks += checks[i].getTotal();
+		}
+	}
+	cout << '$' << cashedChecks << endl;
 	cout << "Total value of all deposits made: " << endl;
-	//$29.89
+	//$15.66
+	cout << '$' << totalDeposits << endl;
+
 	cout << "New balance should be: " << endl;
-	//$41.59
+	//$51.93
+	Money newBalance(oldBalance.get_value() + totalDeposits - cashedChecks);
+	cout << '$' << newBalance.get_value() << endl;
+
 	cout << "Difference from bank balance is: " << endl;
-	//$8.41
+	//$48.07
+	cout <<  currentBalance.get_value() - newBalance.get_value() << endl;
 	cout << "List of all cashed checks: " << endl;
 
-	cout << "Id \t Amount \t Cashed status" << endl;
-	//4 \t $20.30 \t 1
+	cout << "Id " << '\t' << "Amount " << '\t' << "Cashed status" << endl;
+	//1 \t $12.31 \t 1
+	//2 \t $15.42 \t 1
+	for (int i = 0; i < numChecks; i++) {
+		if (checks[i].isChecked() == 1) {
+			cout << checks[i].getId() << '\t' << '$' << checks[i].getTotal() << '\t' << checks[i].isChecked() << endl;
+		}
+	}
 	cout << "List of all non-cashed checks:" << endl;
 
-	cout << "Id \t Amount \t Cashed status" << endl;
-	//3 \t $13.31 \t 0
+	cout << "Id " << '\t' << "Amount " << '\t' << "Cashed status" << endl;
+	//2 \t $37.2 \t 0
+	for (int i = 0; i < numChecks; i++) {
+		if (checks[i].isChecked() == 0) {
+			cout << checks[i].getId() << '\t' << '$' << checks[i].getTotal() << '\t' << checks[i].isChecked() << endl;
+		}
+	}
 
 }
-
-**TODO add more example codes and details later
