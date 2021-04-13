@@ -1,0 +1,321 @@
+#include<iostream>
+#include<string>
+#include<vector>
+#include<time.h>
+using namespace std;
+
+class Organism {
+public:
+	Organism() : moves(0), isMoved(false) {};
+	virtual ~Organism() = default;
+	virtual void move() = 0;
+	virtual char getType() const = 0;
+	virtual void breed() = 0;
+	bool isMoved;
+
+protected:
+	int moves;
+};
+
+//Global init of 2D vector
+vector<vector<Organism*>>world(20, vector<Organism*>(20));
+
+
+class Space : public Organism {
+	char type = '-';
+public:
+	Space() : Organism() {};
+	virtual void move() {};
+	virtual char getType() const {return type;}
+	virtual void breed() {};
+
+};
+Space* space = new Space();
+
+class Ant : public Organism {
+	char type = 'o';
+	int x = 0 , y = 0;
+	int moves = 0;
+public:
+	Ant() : Organism() {
+		bool isEmpty = false;
+		while (isEmpty == false) {
+			x = rand() % 20;
+			y = rand() % 20;
+			if (world[x][y] == space) {
+				isEmpty = true;
+			}
+		}
+		world[x][y] = this;
+		
+	};
+	virtual void move();
+	virtual char getType() const { return type; }
+	virtual void breed();
+};
+
+void Ant::move() { 
+	int num = rand() % 4;
+	//left
+	if (num == 0) {
+		int n = x - 1;
+		if (x >
+			
+			
+			0 && world[n][y] == space) {
+			world[x][y] = space;
+			x--;
+			world[x][y] = this;
+		}
+	}
+	//right
+	if (num == 1) {
+		int n = x + 1;
+		if (x < 19 && world[n][y] == space) {
+			world[x][y] = space;
+			x++;
+			world[x][y] = this;
+		}
+	}
+	//up
+	if (num == 2) {
+		int n = y - 1;
+		if (y > 0 && world[x][n] == space) {
+			world[x][y] = space;
+			y--;
+			world[x][y] = this;
+		}
+	}
+	//down
+	if (num == 3) {
+		int n = y + 1;
+		if (y < 19 && world[x][n] == space) {
+			world[x][y] = space;
+			y++;
+			world[x][y] = this;
+		}
+	}
+	this->isMoved = true;
+	this->moves++;
+	this->breed();
+};
+
+void Ant::breed() {
+	if (this->moves == 3) {
+		int i = this->x, j = this->y;
+		if ( i < 19 && world[i++][j] == space) {
+			world[i][j] = new Ant();
+			int i = this->x, j = this->y;
+		}
+		else if ( i > 0 && world[i--][j] == space) {
+			world[i][j] = new Ant();
+			int i = this->x, j = this->y;
+		}
+		else if ( j < 19 && world[i][j++] == space) {
+			world[i][j] = new Ant();
+			int i = this->x, j = this->y;
+		}
+		else if ( j > 0 && world[i][j--] == space) {
+			world[i][j] = new Ant();
+		}
+		this->moves = 0;
+	}
+}
+
+class Doodlebug : public Organism {
+	char type = 'X';
+	int x = 0, y = 0;
+	int moves = 0;
+public:
+	Doodlebug() : Organism(), starve(0) {
+		bool isEmpty = false;
+		while (isEmpty == false) {
+			x = rand() % 20;
+			y = rand() % 20;
+			if (world[x][y] == space) {
+				isEmpty = true;
+			}
+		}
+		world[x][y] = this;
+	};
+	virtual void move();
+	virtual char getType() const { return type; }
+	virtual void breed();
+private:
+	int starve;
+};
+
+void Doodlebug::move() {
+	int num = rand() % 4;
+	//left
+	if (num == 0) {
+		int n = x - 1;
+		if (x > 0 && world[n][y] == space) {
+			world[x][y] = space;
+			x--;
+			world[x][y] = this;
+			this->starve++;
+		}
+
+		if (x > 0 && world[n][y]->getType() == 'o') {
+			world[x][y] = space;
+			x--;
+			world[x][y] = this;
+			this->starve = 0;
+		}
+	}
+	//right
+	if (num == 1) {
+		int n = x + 1;
+		if (x < 19 && world[n][y] == space) {
+			world[x][y] = space;
+			x++;
+			world[x][y] = this;
+			this->starve++;
+		}
+
+		if (x < 19 && world[n][y]->getType() == 'o') {
+			world[x][y] = space;
+			x++;
+			world[x][y] = this;
+			this->starve = 0;
+		}
+	}
+	//up
+	if (num == 2) {
+		int n = y - 1;
+		if (y > 0 && world[x][n] == space) {
+			world[x][y] = space;
+			y--;
+			world[x][y] = this;
+			this->starve++;
+		}
+
+		if (y > 0 && world[x][n]->getType() == 'o') {
+			world[x][y] = space;
+			y--;
+			world[x][y] = this;
+			this->starve = 0;
+		}
+	}
+	//down
+	if (num == 3) {
+		int n = y + 1;
+		if (y < 19 && world[x][n] == space) {
+			world[x][y] = space;
+			y++;
+			world[x][y] = this;
+			this->starve++;
+		}
+
+		if (y < 19 && world[x][n]->getType() == 'o') {
+			world[x][y] = space;
+			y++;
+			world[x][y] = this;
+			this->starve = 0;
+		}
+	}
+	this->isMoved = true;
+	this->moves++;
+	this->breed();
+
+	if (this->starve == 3) {
+		world[x][y] = space;
+	}
+};
+
+void Doodlebug::breed() {
+	if (this->moves == 8) {
+		int i = this->x, j = this->y;
+		if (i < 19 && world[i++][j] == space) {
+			world[i][j] = new Doodlebug();
+			int i = this->x, j = this->y;
+		}
+		else if (i > 0 && world[i--][j] == space) {
+			world[i][j] = new Doodlebug();
+			int i = this->x, j = this->y;
+		}
+		else if (j < 19 && world[i][j++] == space) {
+			world[i][j] = new Doodlebug();
+			int i = this->x, j = this->y;
+		}
+		else if (j > 0 && world[i][j--] == space) {
+			world[i][j] = new Doodlebug();
+		}
+		this->moves = 0;
+	}
+}
+
+void createWorld(vector<vector<Organism*>>& world) {
+	srand(time(NULL));
+	for (int x = 0; x < world.size(); x++) {
+		for (int y = 0; y < 20; y++) {
+			world[x][y] = space;
+		}
+	}
+	
+	for (int i = 0; i < 100; i++) {
+		Ant* ant = new Ant();
+	}
+	
+	
+	for (int i = 0; i < 8; i++) {
+		Doodlebug* doodlebug = new Doodlebug();
+	}
+}
+
+void printWorld(vector<vector<Organism*>>& world) {
+
+	for (int x = 0; x < world.size(); x++) {
+		for (int y = 0; y < 20; y++) {
+			cout << world[x][y]->getType() << " ";
+		}
+		cout << endl;
+	}
+
+}
+
+void changeWorld(vector<vector<Organism*>>& world) {
+	for (int x = 0; x < world.size(); x++) {
+		for (int y = 0; y < 20; y++) {
+			if (world[x][y] != space)
+			{
+				world[x][y]->isMoved = false;
+			}
+		}
+	}
+
+	for (int x = 0; x < world.size(); x++) {
+		for (int y = 0; y < 20; y++) {
+			if (world[x][y]->getType() == 'X' && world[x][y]->isMoved == false)
+			{
+				world[x][y]->isMoved = true;
+				world[x][y]->move();
+			}
+		}
+	}
+
+	for (int x = 0; x < world.size(); x++) {
+		for (int y = 0; y < 20; y++) {
+			if (world[x][y]->getType() == 'o' && world[x][y]->isMoved == false)
+			{
+				world[x][y]->isMoved = true;
+				world[x][y]->move();
+			}
+		}
+	}
+}
+
+
+int main() {
+	createWorld(world);
+	printWorld(world);
+	
+	while (cin.get() == '\n') {
+		changeWorld(world);
+		printWorld(world);
+		
+	}
+
+	return 0;
+}
