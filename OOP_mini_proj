@@ -146,74 +146,90 @@ private:
 };
 
 void Doodlebug::move() {
-	int num = rand() % 4;
-	//left
-	if (num == 0) {
-		int n = x - 1;
-		if (x > 0 && world[n][y] == space) {
-			world[x][y] = space;
-			x--;
-			world[x][y] = this;
-			this->starve++;
-		}
-
-		if (x > 0 && world[n][y]->getType() == 'o') {
+	bool isAntAround = false;
+	int n = x - 1;
+	if (isAntAround == false && x > 0) {
+		//left
+		if (world[n][y]->getType() == 'o') {
 			world[x][y] = space;
 			x--;
 			world[x][y] = this;
 			this->starve = 0;
+			isAntAround = true;
 		}
 	}
-	//right
-	if (num == 1) {
-		int n = x + 1;
-		if (x < 19 && world[n][y] == space) {
-			world[x][y] = space;
-			x++;
-			world[x][y] = this;
-			this->starve++;
-		}
-
-		if (x < 19 && world[n][y]->getType() == 'o') {
+	n = x + 1;
+	if (isAntAround == false && x < 19) {
+		if (world[n][y]->getType() == 'o') {
 			world[x][y] = space;
 			x++;
 			world[x][y] = this;
 			this->starve = 0;
+			isAntAround = true;
 		}
 	}
-	//up
-	if (num == 2) {
-		int n = y - 1;
-		if (y > 0 && world[x][n] == space) {
-			world[x][y] = space;
-			y--;
-			world[x][y] = this;
-			this->starve++;
-		}
-
-		if (y > 0 && world[x][n]->getType() == 'o') {
+	n = y - 1;
+	if (isAntAround == false && y > 0) {
+		//up
+		if (world[x][n]->getType() == 'o') {
 			world[x][y] = space;
 			y--;
 			world[x][y] = this;
 			this->starve = 0;
+			isAntAround = true;
 		}
 	}
-	//down
-	if (num == 3) {
-		int n = y + 1;
-		if (y < 19 && world[x][n] == space) {
-			world[x][y] = space;
-			y++;
-			world[x][y] = this;
-			this->starve++;
-		}
-
-		if (y < 19 && world[x][n]->getType() == 'o') {
+	n = y + 1;
+	if (isAntAround == false && y < 19) {
+		//down
+		if (world[x][n]->getType() == 'o') {
 			world[x][y] = space;
 			y++;
 			world[x][y] = this;
 			this->starve = 0;
+			isAntAround = true;
 		}
+	} 
+
+	if (isAntAround == false) {
+		int num = rand() % 4;
+		//left
+		if (num == 0) {
+			int n = x - 1;
+			if (x > 0 && world[n][y] == space) {
+				world[x][y] = space;
+				x--;
+				world[x][y] = this;
+			}
+		}
+		//right
+		if (num == 1) {
+			int n = x + 1;
+			if (x < 19 && world[n][y] == space) {
+				world[x][y] = space;
+				x++;
+				world[x][y] = this;
+			}
+		}
+		//up
+		if (num == 2) {
+			int n = y - 1;
+			if (y > 0 && world[x][n] == space) {
+				world[x][y] = space;
+				y--;
+				world[x][y] = this;
+			}
+		}
+		//down
+		if (num == 3) {
+			int n = y + 1;
+			if (y < 19 && world[x][n] == space) {
+				world[x][y] = space;
+				y++;
+				world[x][y] = this;
+			}
+		}
+
 	}
 	this->isMoved = true;
 	this->moves++;
@@ -259,7 +275,7 @@ void createWorld(vector<vector<Organism*>>& world) {
 	}
 	
 	
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 5; i++) {
 		Doodlebug* doodlebug = new Doodlebug();
 	}
 }
@@ -285,6 +301,7 @@ void changeWorld(vector<vector<Organism*>>& world) {
 		}
 	}
 
+	
 	for (int x = 0; x < world.size(); x++) {
 		for (int y = 0; y < 20; y++) {
 			if (world[x][y]->getType() == 'X' && world[x][y]->isMoved == false)
