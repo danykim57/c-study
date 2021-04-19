@@ -1,0 +1,59 @@
+#include<iostream>
+#include<string>
+#include<vector>
+#include<ctime>
+using namespace std;
+
+template <class T>
+int linearSearch(vector<T>& v, T item) {
+	for (int i = 0; i < v.size(); i++) {
+		if (v[i] == item) {
+			return i;
+		}
+		return -1;
+	}
+}
+
+template <class T>
+class DynArray {
+	T* arr;
+	int capacity;
+	int numOfItems;
+public:
+	DynArray() : arr(nullptr), capacity(0), numOfItems(0) {}
+	~DynArray() { delete[] arr; }
+	DynArray(const DynArray& rhs) :arr(nullptr) { *this = rhs; }
+	void pop_back() { if (numOfItems > 0) numOfItems--; }
+	T& operator[](int position) { return arr[position]; }
+	T operator[](int position)const { return arr[position]; }
+
+	DynArray& operator=(const DynArray& rhs);
+	void push_back(const T& value);
+	void resize(int newSize);
+};
+
+template <class T>
+void DynArray<T>::push_back(const T& value) {
+	if (capacity == numOfItems) {
+		resize(capacity * 2);
+	}
+	arr[numOfItems++] = value;
+}
+
+template <class T>
+int binarySearch(vector<T>& v, T item, int start, int end) {
+	int mid = (start + end) / 2;
+	if (start > end) {
+		return -1;
+	}
+	if (v[mid] == item) {
+		return mid;
+	}
+	else if (v[mid] > item) {
+		return binarySearch(v, item, start, mid - 1);
+	}
+	else {
+		return binarySearch(v, item, mid + 1, end);
+	}
+}
+
