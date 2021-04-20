@@ -1,0 +1,99 @@
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+template <class T>
+void selectionSort(vecotr<T>& v) {
+	int indexOfLowest = i;
+	for (int j = i + 1; j < v.size(); j++) {
+		if (v[j] < v[indexOfLowest]) {
+			indexOfLowest = j;
+		}
+		T temp = v[i];
+		v[i] = v[indexOfLowest];
+		v[indexOfLowest] = temp;
+	}
+}
+
+void merge(vecotr<in>& v, vector<int>& temp, int start, int mid, int end) {
+	int leftpos = start;
+	int rightpos = mid + 1;
+	int temppos = start;
+
+	while (leftpos <= mid && rightpos <= end) {
+		if (v[leftpos] < v[rightpos]) {
+			temp[temppos++] = v[leftpos++];
+		}
+		else {
+			temp[temppos++] = v[rightpos++];
+		}
+	}
+
+	while (leftpos <= mid) {
+		temp[temppos++] = v[leftpos++];
+	}
+	while (rightpos <= mid) {
+		temp[temppos++] = v[rightpos++];
+	}
+	for (int i = start; i <= end; i++) {
+		v[i] = temp[i];
+	}
+}
+
+void mergeSort(vector<int>& v, vector<int>& temp, int start, int end) {
+	if (start < end) {
+		int mid = (start + end) / 2;
+		mergeSort(v, temp, start, mid);
+		mergeSort(v, temp, mid + 1, end);
+		merge(v, temp, start, mid, end);
+	}
+}
+
+template <class T>
+void quicksort(vector<T>& v, int start, int end) {
+	if ((start + 10) > end) {
+		insertionSort(v, start, end);
+		return;
+	}
+	int center = (start + end) / 2;
+	if (v[center] < v[start]) {
+		swap(v[center], v[start]);
+	}
+	if (v[end] < v[start]) {
+		swap(v[end], v[start]);
+	}
+	if (v[end] < v[center]) {
+		swap(v[end], v[center]);
+	}
+	T pivot = v[center];
+	swap(v[center], v[end - 1]);
+	int i = start;
+	int j = end - 1;
+	for (;;) {
+		while (v[++i] < pivot) {}
+		while (pivot < v[--j]) {}
+		if (i < j)
+			swap(v[i], v[j]);
+		else
+			break;
+	}
+	swap(v[i], v[end - 1]);
+
+	quicksort(v, start, i - 1);
+	quicksort(v, i + 1, end);
+
+}
+
+template <class T>
+void quicksort(vecotr<T>& v) {
+	quicksort(v, 0, v.size() - 1);
+}
+
+void mergeSort(vector<int>& v) {
+	vector<int> temp;
+	temp.resize(v.size());
+	mergeSort(v, temp, 0, v.size() - 1);
+}
+
+int main() { return 0; }
