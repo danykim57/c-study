@@ -87,7 +87,7 @@ void quicksort(vector<T>& v, int start, int end) {
 
 template <class T>
 void quicksort(vecotr<T>& v) {
-	quicksort(v, 0, v.size() - 1);
+	quicksort(v, 0, v.size());
 }
 
 void mergeSort(vector<int>& v) {
