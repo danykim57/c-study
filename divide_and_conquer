@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+vector<int> divideConquer(const vector<int>& v, vector<int>& vec, int start, int end) {
+	if (start > end - 2) {
+		vec[0] = v[start];
+		vec[1] = v[start];
+		return vec;
+	}
+
+	if (start >= end - 2) {
+		int start1 = start + 1;
+		if (v[start] > v[start1]) {
+			vec[0] = v[start1];
+			vec[1] = v[start];
+			return vec;
+		}
+		else {
+			vec[1] = v[start1];
+			vec[0] = v[start];
+			return vec;
+		}
+	}
+
+	else {
+		vec = divideConquer(v, vec, start + 1, end);
+		if (v[start] < vec[0]) { //min
+			vec[0] = v[start];
+		}
+		if (v[start] > vec[1]) { // max
+			vec[1] = v[start];
+		}
+		return vec;
+	}
+}
+	
+int main() {
+	vector<int> v = { 35, 67, 53, 1, 24, 7, 0, 42 };
+	cout << "vector size: " << v.size() << endl;
+	vector<int> vec(2);
+	vector<int> vec2 = divideConquer(v, vec, 0, v.size());
+	for (int i = 0; i < vec2.size(); i++) {
+		cout << vec2[i] << endl;
+	}
+	return 0;
+}
