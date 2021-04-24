@@ -3,46 +3,61 @@
 #include <vector>
 using namespace std;
 
-vector<int> divideConquer(const vector<int>& v, vector<int>& vec, int start, int end) {
-	if (start > end - 2) {
-		vec[0] = v[start];
-		vec[1] = v[start];
-		return vec;
+vector<int> divideConquer(const vector<int>& v, int start, int end) {
+	if (start == end) {
+		vector<int> v_;
+		v_.push_back(v[start]);
+		v_.push_back(v[start]);
+		return v_;
 	}
 
-	if (start >= end - 2) {
-		int start1 = start + 1;
-		if (v[start] > v[start1]) {
-			vec[0] = v[start1];
-			vec[1] = v[start];
-			return vec;
-		}
-		else {
-			vec[1] = v[start1];
-			vec[0] = v[start];
-			return vec;
-		}
+	if ((start + 1) == end) {
+		int min = v[start] < v[end] ? v[start] : v[end];
+		int max = v[start] > v[end] ? v[start] : v[end];
+		vector<int> v_;
+		v_.push_back(min);
+		v_.push_back(max);
+		return v_;
 	}
 
-	else {
-		vec = divideConquer(v, vec, start + 1, end);
-		if (v[start] < vec[0]) { //min
-			vec[0] = v[start];
+	if (start < end) {
+		int mid = (start + end) / 2;
+
+		vector<int> left = divideConquer(v, start, mid);
+		vector<int> right = divideConquer(v, mid + 1, end);
+		int min, max;
+		if (left[0] < right[0]) {
+			min = left[0];
 		}
-		if (v[start] > vec[1]) { // max
-			vec[1] = v[start];
+	    if (left[0] >= right[0]) {
+			min = right[0];
 		}
-		return vec;
+		if (right[1] > left[1]) {
+			max = right[1];
+		}
+		if (right[1] <= left[1]) {
+			max = left[1];
+		}
+		vector<int> v_;
+		v_.push_back(min);
+		v_.push_back(max);
+		return v_;
 	}
 }
-	
+
+vector<int> divideConquer(const vector<int>& v) { //driver function
+	int start, end;
+	start = 0;
+	end = v.size() - 1;
+
+	return divideConquer(v,  start, end);
+}
+
 int main() {
-	vector<int> v = { 35, 67, 53, 1, 24, 7, 0, 42 };
-	cout << "vector size: " << v.size() << endl;
-	vector<int> vec(2);
-	vector<int> vec2 = divideConquer(v, vec, 0, v.size());
-	for (int i = 0; i < vec2.size(); i++) {
-		cout << vec2[i] << endl;
+	vector<int> v = { 35, 67, 1, 53, 1, 1, -5, 24, 7, 0 };
+	vector<int> vec = divideConquer(v);
+	for (int i = 0; i < vec.size(); i++) {
+		cout << vec[i] << endl;
 	}
 	return 0;
 }
