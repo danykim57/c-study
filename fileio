@@ -1,0 +1,40 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+/*
+int main() {
+	ofstream outFile;
+	outFile.open("outfile.txt");
+	outFile << "Hello World." << endl;
+}
+*/
+
+void openInputFile(ifstream& inFile) {
+	string filename;
+	cout << "what file name? ";
+	cin >> filename;
+	inFile.open(filename);
+	while (!inFile) {
+		cout << "File Failed To Open!" << endl;
+		cout << "What filename? ";
+		cin >> filename;
+		inFile.clear();
+		inFile.open(filename);
+	}
+
+	int main() {
+		ifstream inFile;
+		openInputFile(inFile);
+		vector<int> v;
+		int temp;
+		while (inFile >> temp) {
+			v.push_back(temp);
+		}
+		double sum;
+		for (int item : v)
+			sum += item;
+		cout << "The average of the integers in the file is: " << sum / v.size() << endl;
+		return 0;
+	}
+}
