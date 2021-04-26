@@ -38,3 +38,5 @@ void openInputFile(ifstream& inFile) {
 		return 0;
 	}
 }
+
+//getline , ignore , seekg
