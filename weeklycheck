@@ -1,0 +1,262 @@
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <list>
+#include <string>
+using namespace std;
+
+class Employee {
+	int id;
+	double hourPayRate;
+	string name;
+	Employee* next = nullptr;
+	Employee* prev = nullptr;
+
+public:
+	Employee(int newId = 0, string newName = "", double newHourPayRate = 0) : name(newName), id(newId), hourPayRate(newHourPayRate){}
+	int getId() const { return id; }
+	string getName() const { return name; }
+	double getPayrate() const { return hourPayRate; }
+	void setId(int newId) { id = newId; }
+	void setPayRate(double newPayRate) { hourPayRate = newPayRate; }
+	void setName(string newName) { name = newName; }
+};
+
+class Payroll {
+	int id;
+	int hours;
+
+public:
+	Payroll(int newId = 0, int newHours = 0) : id(newId), hours(newHours) {}
+	int getId() const { return id; }
+	int getHours() const { return hours; }
+	void setId(int newId) { id = newId; }
+	void setHours(int newHours) { hours = newHours; }
+};
+
+class WeeklyCheck {
+	string name;
+	double amount;
+
+public:
+	WeeklyCheck(string newName = "", double newAmount = 0) : name(newName), amount(newAmount) {}
+	string getName() { return name; }
+	double getAmount() { return amount; }
+	void setName(string newName) { name = newName; }
+	void setAmount(double newAmount) { amount = newAmount; }
+};
+
+istream& operator>>(istream& ins, Employee& rhs) {
+	int tempId;
+	double tempPayRate;
+	string tempName = "";
+	string line;
+	ins >> tempId;
+	ins >> tempPayRate;
+	ins.ignore();
+	getline(ins, tempName);
+	rhs.setId(tempId);
+	rhs.setPayRate(tempPayRate);
+	rhs.setName(tempName);
+	return ins;
+}
+
+istream& operator>>(istream& ins, Payroll& rhs) {
+	int tempId;
+	int tempHours;
+	ins >> tempId;
+	ins >> tempHours;
+	rhs.setId(tempId);
+	rhs.setHours(tempHours);
+	return ins;
+}
+
+template <class T>
+class LList;
+
+template <class T>
+class LListNode {
+	T data;
+	LListNode<T>* next;
+	LListNode<T>* prev;
+public:
+	T* getData() {return &data; }
+	LListNode<T>* getNext() {return next; }
+	LListNode(const T& newdata = T(), LListNode<T>* newnext = nullptr, LListNode<T>* newprev = nullptr) :data(newdata), next(newnext), prev(newprev) {}
+	friend class LList<T>;
+};
+
+template <class T>
+class LList {
+	T data;
+	LListNode<T>* head;
+	LListNode<T>* tail;
+
+public:
+	LList();
+	~LList();
+	LList(const LList<T>& rhs);
+	LList<T>& operator=(const LList<T>& rhs);
+
+	LListNode<T>* getHead() {return head; }
+	void clear() { while (!isEmpty()) pop_front(); }
+	void push_back(const T& data) { tail->prev = new LListNode<T>(data, tail, tail->prev); tail->prev->prev->next = tail->prev; }
+	void push_front(const T& data) { head->next = new LListNode(data, head->next, head); head->next->next->prev = head->next; }
+	T pop_back();
+	T pop_front();
+	int size();
+	bool isEmpty() { return head->next == tail; }
+};
+
+template <class T>
+LList<T>& LList<T>::operator=(const LList<T>& rhs) {
+	if (this == &rhs)
+		return *this;
+	clear();
+	LListNode<T>* ptr = rhs.head->next;
+	while (ptr != rhs.tail) {
+		push_back(ptr->data);
+	}
+	return *this;
+}
+
+template <class T>
+int LList<T>::size() {
+	LListNode<T>* ptr = head->next;
+	int count = 0;
+	while (ptr != tail) {
+		count++;
+		ptr = ptr->next;
+	}
+	return count;
+}
+
+template <class T>
+T LList<T>::pop_back() {
+	if (tail->prev == head)
+		return *this;
+	T retval = tail->prev->data;
+	LListNode<T>* nodeToDelete = tail->prev;
+	tail->prev = nodeToDelete->prev;
+	nodeToDelete->prev->next = nodeToDelete->next;
+	delete nodeToDelete;
+	return retval;
+}
+
+template <class T>
+T LList<T>::pop_front() {
+	if (tail->prev == head) 
+		return T();
+	T retval = head->next->data;
+	LListNode<T>* nodeToDelete = head->next;
+	head->next = nodeToDelete->next;
+	head->next->prev = head;
+	delete nodeToDelete;
+	return retval;
+}
+
+template <class T>
+LList<T>::~LList() {
+	clear();
+	delete head;
+	delete tail;
+}
+
+template <class T>
+LList<T>::LList(const LList<T>& rhs) {
+	head = new LListNode();
+	tail = new LListNode();
+	head->next = tail;
+	tail->prev = head;
+	*this = rhs;
+}
+
+template <class T>
+LList<T>::LList() { 
+	head = new LListNode<T>();
+	tail = new LListNode<T>();
+	head->next = tail;
+	tail->prev = head;
+}
+
+void writeFile(ofstream& outFile) {
+	string filename;
+	cout << "Enter the file name: " << endl;
+	cin >> filename;
+	outFile.open(filename);
+};
+
+void openFile(ifstream& inFile) {
+	string filename;
+	cout << "Enter the file name: ";
+	cin >> filename;
+	inFile.open(filename);
+	while (!inFile) {
+		cout << "Wrong File Name" << endl;
+		cout << "Enter the file name: ";
+		cin >> filename;
+		inFile.clear();
+		inFile.open(filename);
+	}
+};
+/*
+void swap(LListNode* one, LListNode* two) {
+	LListNode* temp = two->link;
+
+}
+void bubbleSort(LListNode* first, int n) {
+	int i, j;
+	for (i = 0; i < n - 1; i++) {
+		for (j = 0; j < n - i - 1; j++) {
+			if (first[j] > arr[j + 1]) {
+				swap();
+				//&arr[j], &arr[j+1]
+			}
+			
+		}
+	}
+}
+*/
+
+int main() {
+	const int maxNames = 10;
+	LList<Employee> employeeList = LList<Employee>();
+	LList<Payroll> payrollList = LList<Payroll>();
+	ifstream inFile;
+	ifstream inFile1;
+	Employee temp;
+	Payroll temp1;
+	openFile(inFile);
+	
+	while (inFile >> temp) {
+		employeeList.push_back(temp);
+	}
+
+	cout << endl;
+	cout << "Print Employee File: " << endl;
+	LListNode<Employee>* curr = employeeList.getHead()->getNext();
+	while(curr->getNext() != nullptr) {
+		cout << curr->getData()->getId() << " "  << curr->getData()->getPayrate() << " " << curr->getData()->getName() << endl;
+		curr = curr->getNext();
+	}
+
+	cout << endl;
+	openFile(inFile1);
+	while (inFile1 >> temp1) {
+		payrollList.push_back(temp1);
+	}
+	cout << endl;
+	cout << "Print Payroll File: " << endl;
+
+	LListNode<Payroll>* curr1 = payrollList.getHead()->getNext();
+	while (curr1->getNext() != nullptr) {
+		cout << curr1->getData()->getId() << " " << curr1->getData()->getHours() << endl;
+		curr1 = curr1->getNext();
+	}
+
+	cout << endl;
+	cout << "*********Payroll Information********" << endl;
+	cout << "*********End payroll**************" << endl;
+	return 0;
+}
