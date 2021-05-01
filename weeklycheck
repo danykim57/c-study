@@ -10,8 +10,6 @@ class Employee {
 	int id;
 	double hourPayRate;
 	string name;
-	Employee* next = nullptr;
-	Employee* prev = nullptr;
 
 public:
 	Employee(int newId = 0, string newName = "", double newHourPayRate = 0) : name(newName), id(newId), hourPayRate(newHourPayRate){}
@@ -36,14 +34,20 @@ public:
 };
 
 class WeeklyCheck {
+	int id;
 	string name;
+	double rate;
 	double amount;
 
 public:
-	WeeklyCheck(string newName = "", double newAmount = 0) : name(newName), amount(newAmount) {}
+	WeeklyCheck(int newId = 0, string newName = "", double newRate = 0 , double newAmount = 0) : id(newId), name(newName), rate(newRate), amount(newAmount) {}
+	int getId() { return id; }
 	string getName() { return name; }
+	double getRate() { return rate; }
 	double getAmount() { return amount; }
+	void setId(int newId) { id = newId; }
 	void setName(string newName) { name = newName; }
+	void setRate(double newRate) { rate = newRate; }
 	void setAmount(double newAmount) { amount = newAmount; }
 };
 
@@ -102,7 +106,7 @@ public:
 	LListNode<T>* getHead() {return head; }
 	void clear() { while (!isEmpty()) pop_front(); }
 	void push_back(const T& data) { tail->prev = new LListNode<T>(data, tail, tail->prev); tail->prev->prev->next = tail->prev; }
-	void push_front(const T& data) { head->next = new LListNode(data, head->next, head); head->next->next->prev = head->next; }
+	void push_front(const T& data) { head->next = new LListNode<T>(data, head->next, head); head->next->next->prev = head->next; }
 	T pop_back();
 	T pop_front();
 	int size();
@@ -165,8 +169,8 @@ LList<T>::~LList() {
 
 template <class T>
 LList<T>::LList(const LList<T>& rhs) {
-	head = new LListNode();
-	tail = new LListNode();
+	head = new LListNode<T>();
+	tail = new LListNode<T>();
 	head->next = tail;
 	tail->prev = head;
 	*this = rhs;
@@ -179,13 +183,6 @@ LList<T>::LList() {
 	head->next = tail;
 	tail->prev = head;
 }
-
-void writeFile(ofstream& outFile) {
-	string filename;
-	cout << "Enter the file name: " << endl;
-	cin >> filename;
-	outFile.open(filename);
-};
 
 void openFile(ifstream& inFile) {
 	string filename;
@@ -200,29 +197,42 @@ void openFile(ifstream& inFile) {
 		inFile.open(filename);
 	}
 };
-/*
-void swap(LListNode* one, LListNode* two) {
-	LListNode* temp = two->link;
+void swap(LListNode<WeeklyCheck> *left, LListNode<WeeklyCheck> *right) {
+	LListNode<WeeklyCheck> *temp = right;
+	right = left;
+	left = temp;
 
 }
-void bubbleSort(LListNode* first, int n) {
-	int i, j;
-	for (i = 0; i < n - 1; i++) {
-		for (j = 0; j < n - i - 1; j++) {
-			if (first[j] > arr[j + 1]) {
-				swap();
-				//&arr[j], &arr[j+1]
-			}
-			
-		}
+
+void bubbleSort(LListNode<WeeklyCheck>* start) {
+	bool isSwapped = false;
+	LListNode<WeeklyCheck> *left, *right = nullptr;
+	if (start == nullptr) {
+		return;
 	}
+	do {
+		isSwapped = false;
+		left = start;
+		while (left->getNext() != right) {
+			if (left->getData()->getAmount() < left->getNext()->getData()->getAmount()) {
+				swap(*left->getData(), *left->getNext()->getData());
+				isSwapped = true;
+			}
+			left = left->getNext();
+		}
+		right = left;
+		if (right->getNext() == nullptr) {
+			isSwapped = true;
+		}
+	} while (isSwapped);
 }
-*/
+
 
 int main() {
 	const int maxNames = 10;
 	LList<Employee> employeeList = LList<Employee>();
 	LList<Payroll> payrollList = LList<Payroll>();
+	LList<WeeklyCheck> weeklycheckList = LList<WeeklyCheck>();
 	ifstream inFile;
 	ifstream inFile1;
 	Employee temp;
@@ -255,8 +265,37 @@ int main() {
 		curr1 = curr1->getNext();
 	}
 
+	curr = employeeList.getHead()->getNext();
+	while (curr->getNext() != nullptr) {
+		int tempId = curr->getData()->getId();
+		string tempName = curr->getData()->getName();
+		double tempRate = curr->getData()->getPayrate();
+		WeeklyCheck tempCheck(tempId, tempName, tempRate);
+		weeklycheckList.push_back(tempCheck);
+		curr = curr->getNext();
+	}
+	curr1 = payrollList.getHead()->getNext();
+	while (curr1->getNext() != nullptr) {
+		LListNode<WeeklyCheck>* curr2 = weeklycheckList.getHead()->getNext();
+		while (curr2->getNext() != nullptr) {
+			if (curr2->getData()->getId() == curr1->getData()->getId()) {
+				double tempAmount = curr2->getData()->getAmount() + (curr2->getData()->getRate() * curr1->getData()->getHours());
+				curr2->getData()->setAmount(tempAmount);
+			}
+			curr2 = curr2->getNext();
+		}
+		curr1 = curr1->getNext();
+	}
+	
+	bubbleSort(weeklycheckList.getHead()->getNext());
+
+	LListNode<WeeklyCheck>* curr3 = weeklycheckList.getHead()->getNext();
 	cout << endl;
 	cout << "*********Payroll Information********" << endl;
+	while (curr3->getNext() != nullptr) {
+		cout << curr3->getData()->getName() << ", $" << curr3->getData()->getAmount() << endl;
+		curr3 = curr3->getNext();
+	}
 	cout << "*********End payroll**************" << endl;
 	return 0;
 }
