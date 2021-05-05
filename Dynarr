@@ -1,0 +1,70 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+template <class T>
+class DynArray{
+	T* data;
+	int numOfElements;
+	int cap;
+public:
+	DynArray() :cap(5), numOfElements(0){ data = new T[cap]; }
+	virtual ~DynArray(){ delete[] data; }
+	DynArray(const DynArray<T>& rhs) :data(nullptr){ *this = rhs; }
+							
+	T pop_back(){ 
+		if (numOfElements > 0) 
+			numOfElements--; 
+		return data[numOfElements]; 
+	} 
+	void clear(){ numOfElements = 0; } 
+	int size() const{ return numOfElements; }
+	T operator[](int position) const{ return data[position]; }
+	T& operator[](int position){ return data[position]; }
+
+	DynArray<T>& operator=(const DynArray<T>& rhs);
+	void push_back(const T& newdata); 
+	
+};
+template <class T>
+void DynArray<T>::push_back(const T& newdata){
+	if (numOfElements == cap){ 
+		cap *= 2; 
+		T * temp = new T[cap];
+		for (int i = 0; i < numOfElements; i++)
+			temp[i] = data[i];
+		
+		delete[] data;
+		data = temp;
+	}
+	data[numOfElements++] = newdata; 
+}
+
+template <class T>
+DynArray<T>& DynArray<T>::operator=(const DynArray<T>& rhs){
+	if (this == &rhs)
+		return *this;
+	delete[] data;
+	numOfElements = rhs.numOfElements;
+	cap = rhs.cap;
+	data = new T[cap];
+	for (int i = 0; i < numOfElements; i++)
+		data[i] = rhs.data[i];
+	return *this;
+
+}
+int main(){
+	DynArray<int> d;
+	for (int i = 0; i < 100; i++)
+		d.push_back(i * 10);
+
+	for (int i = 0; i < d.size(); i++)
+		cout << d[i] << endl;
+
+	DynArray<string> ds;
+	ds.push_back("Hello");
+	ds.push_back("World!");
+
+	for (int i = 0; i < ds.size(); i++)
+		cout << ds[i] << endl;
+}
