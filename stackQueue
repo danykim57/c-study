@@ -19,7 +19,7 @@ class Queue {
 	list<T> data;
 public:
 	void enqueue(T newItem) {data.push_back(newItem);}
-	T dequeue() { return data.pop_front(); }
+	void dequeue() { return data.pop_front(); }
 	T top() const { return *data.begin(); }
 	bool isEmpty() const { return data.size() == 0; }
 };
