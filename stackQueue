@@ -7,7 +7,7 @@ class Stack {
 	list<T> data;
 public:
 	void push(T newItem) { data.push_front(newItem); }
-	T pop() { return data.pop_back_front(); }
+	void pop() { return data.pop_front(); }
 	T top() const { return data.size() == 0; }
 	bool isEmpty() const { return data.size() == 0; }
 	int size() const { return data.size(); }
