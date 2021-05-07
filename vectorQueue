@@ -1,0 +1,45 @@
+#include<iostream>
+#include<vector>
+#include <typeinfo>
+#include<string>
+using namespace std;
+
+template <class T>
+class Queue {
+	vector<T> data;
+	int index = 0; //Assign 0 as the starting index
+public:
+	Queue(vector<T> newData): data(newData){}
+	void enqueue(T newItem) { data.push_back(newItem); }
+	void dequeue() { index++; }
+    int top() const { return data[index];}
+	bool isEmpty() const { return data.size() == 0; }
+	int size() const { return data.size(); }
+	void clear() { data.clear(); }
+};
+
+int main() {
+	vector<int> v(0);
+	Queue<int>* queue = new Queue<int>(v);
+	queue->enqueue(1);
+	cout << "Value of the top is " << queue->top() << endl;
+	cout << "Size of the queue is " << queue->size() << endl;
+	queue->enqueue(2);
+	queue->enqueue(3);
+	queue->enqueue(4);
+	queue->enqueue(5);
+	queue->enqueue(6);
+	queue->enqueue(7);
+	queue->dequeue();
+	cout << "Value of the top is " << queue->top() << endl;
+	cout << "Size of the queue is " << queue->size() << endl;
+	queue->dequeue();
+	cout << "Value of the top is " << queue->top() << endl;
+	cout << "Size of the queue is " << queue->size() << endl;
+	queue->dequeue();
+	cout << "Value of the top is " << queue->top() << endl;
+	cout << "Size of the queue is " << queue->size() << endl;
+	queue->clear();
+	cout << "Size of the queue is " << queue->size() << endl;
+	return 0;
+}
