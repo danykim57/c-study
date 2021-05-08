@@ -45,7 +45,7 @@ int BSTNode<T>::height()const {
 
 class lessThanOnage {
 public:
-	bool operator()(const FamilyMember* lhs, const FamilyMember* rhs) { return lhs->getAge() < rhs->getAge(); }
+	bool operator()(const FamilyMember* lhs, const FamilyMember* rhs) const{ return lhs->getAge() < rhs->getAge(); }
 };
 
 int main() {
