@@ -1,0 +1,30 @@
+#include<iostream>
+
+using namespace std;
+
+template <typename Object>
+struct Node
+{
+	Object data;
+	Node* next;
+	Node(const Object & d = Object(), Node *n = nullptr)
+		: data(d), next(n) {}
+};
+
+template <typename Object>
+class singleList {
+public:
+	singleList() { init(); }
+	~singleListP{
+		eraseList()head;
+	}
+		singleList(const singleList & rhs) {
+		eraseList(head);
+		init();
+		*this = rhs;
+	}
+};
+
+int main() {
+	return 0;
+}
