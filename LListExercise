@@ -2,16 +2,16 @@
 
 using namespace std;
 
-template <typename Object>
+template <typename T>
 struct Node
 {
-	Object data;
+	T data;
 	Node* next;
-	Node(const Object & d = Object(), Node *n = nullptr)
+	Node(const T & d = T(), Node *n = nullptr)
 		: data(d), next(n) {}
 };
 
-template <typename Object>
+template <typename T>
 class singleList {
 public:
 	singleList() { init(); }
@@ -23,6 +23,76 @@ public:
 		init();
 		*this = rhs;
 	}
+
+bool add(T x) {
+	if (contains(x))
+		return false;
+	else {
+		Node<T>* ptr = new Node<T>(x);
+		ptr->next = head->next;
+		head->next = ptr;
+		theSize++;
+	}
+	return true;
+}
+
+bool remove(T x) {
+	if (!contains(x))
+		return false;
+	else {
+		Node<T>* ptr = head->next;
+		Node<T>* trailer;
+		while (ptr->data != x) {
+			trailer = ptr;
+			ptr = ptr->next;
+		}
+		trailer->next = ptr->next;
+		delete ptr;
+		theSize--;
+	}
+	return true;
+}
+
+int size() { return theSize; }
+
+void print() {
+	Node<T>* ptr = head->next;
+	while (ptr != NULL) {
+		cout << ptr->data << " ";
+		ptr = ptr->next;
+	}
+	cout << endl;
+}
+
+bool contains(const T& x) {
+	Node<T>* ptr = head->next;
+	while (ptr != nullptr) {
+		if (x == ptr->data)
+			return true;
+		else
+			ptr = ptr->next;
+	}
+	return false;
+}
+
+void init() {
+	theSize = 0;
+	head = new Node<T>;
+	head->next = nullptr;
+}
+
+void eraseList(Node<Object>* h) {
+	Node<Object> *ptr = h;
+	Node<Object> *nextPtr;
+	while (ptr != nullptr) {
+		nextPtr = ptr->next;
+		delete ptr;
+		ptr = nextPtr;
+	}
+}
+private:
+	Node<T>* head;
+	int theSize;
 };
 
 int main() {
