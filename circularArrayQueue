@@ -1,0 +1,28 @@
+#include<vector>
+
+template <typename T>
+class queue {
+	int front, rear;
+	int maxSize;
+	vector<Object> v;
+public:
+	queue(int s) : maxSize(s), front(0), rear(0) { v.resize(maxSize); }
+	queue() { maxSize = 100; front = 0; rear = 0; v.resize(maxSize); }
+	~queue() { while (front != rear) deque(); }
+	bool empty() { return front == rear; }
+	bool full() { return (rear + 1) % maxSize == front; }
+	void enque(T newData) {
+		if (!full()) {
+			v[rear] = newData;
+			rear = (rear + 1) % maxSize;
+		}
+	}
+	T dequeue() {
+		T temp;
+		if (!empty()) {
+			temp = v[front];
+			front = (front + 1) % maxSize;
+			return temp;
+		}
+	}
+};
