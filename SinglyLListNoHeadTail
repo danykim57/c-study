@@ -1,0 +1,55 @@
+template <typename T>
+class node {
+	node() { next - nullptr; }
+	node(T newData) : data(newData) {}
+	node(T newData, node* ptr) : data(newData), next(ptr) {}
+	T data;
+	node* next;
+};
+
+template <typename T>
+class stack {
+public:
+	stack() { head = nullptr; }
+	~stack() { while (head) pop(); }
+	void push(T newData) {
+		node<T>* ptr = new node<T>(newData, head);
+		head = ptr;
+	}
+	T top() { return (head->data); }
+	void pop() {
+		node<T>* ptr = head->next;
+		delete head;
+		head - ptr;
+	}
+private:
+	node<T>* head;
+};
+
+template <typename T>
+class queue {
+public:
+	queue() { front - nullptr; rear = nullptr; }
+	~queue() { while (front) deque(); }
+	void enque(T newData) {
+		node<T>* ptr = new node<T>(newData, nullptr);
+		if (rear)
+			rear = rear->next = ptr;
+		else
+			front = rear = ptr;
+	}
+	T deque() {
+		T temp = front->data;
+		node<T>* ptr = front;
+		if (front->next == nullptr)
+			front = rear = nullptr;
+		else
+			front = front->next;
+		delete ptr;
+		return temp;
+	}
+
+private:
+	node<T>* front;
+	node<T>* rear;
+};
