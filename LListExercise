@@ -95,6 +95,70 @@ private:
 	int theSize;
 };
 
+/*
+   if (getRoot() == nullptr) {
+            return curr_node;
+        }
+
+        if (curr_node->data < getRoot()->data)
+        while ((point->color != BLACK) && (point->parent != nullptr) && (parent->parent != nullptr)&& (point->parent->color ==RED)) {
+        parent = point->parent;
+        if (parent == parent->parent->left) {
+            RBTNode<T>* uncle = parent->parent->right;
+            if ((uncle != nullptr) && (uncle->color == RED)) {
+                uncle->color = BLACK;
+                parent->color = BLACK;
+                parent->parent->color = RED;
+                point = parent->parent;
+            }
+
+            else {
+                if (point == parent->right) {
+                    singleCCR(parent);
+                    point = parent;
+                    parent = point->parent;
+                }
+
+                singleCCR(parent->parent);
+                swapColor(parent->color);
+                if (getColor(parent->parent)) {
+                    swapColor(parent->parent->color);
+                }
+                point = parent;
+            }
+        }
+
+        else {
+            if (parent->parent != nullptr) {
+                RBTNode<T>* uncle = parent->parent->left;
+
+                if ((uncle != nullptr) && (uncle->color == RED)) {
+                    uncle->color = BLACK;
+                    parent->color = BLACK;
+                    parent->parent->color = RED;
+                }
+
+                else {
+                    if (point == parent->left) {
+                        singleCCR(parent);
+                        point = parent;
+                        parent = point->parent;
+                    }
+
+                    singleCCR(parent->parent);
+                    swapColor(parent->color);
+                    if (parent->parent != nullptr) {
+                        swapColor(parent->parent->color);
+                    }
+                    point = parent;
+                }
+            }
+ 
+        }
+        }
+        root->color = BLACK;
+*/
+
 int main() {
 	return 0;
 }
