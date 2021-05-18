@@ -1,0 +1,109 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void swap(int* x, int* y);
+
+class MinHeap {
+	int* p;
+	int capacity;
+	int size;
+public:
+	MinHeap(int capacity);
+
+	void MinHeapify(int index);
+
+	int parent(int index) { return (index - 1) / 2; }
+
+	int left(int index) { return 2 * index + 1; }
+
+	int right(int index) { return 2 * index + 2; }
+
+	int extractMin();
+
+	int getMin() { return p[0]; }
+
+	void decreaseKey(int index, int newValue);
+
+	void insertKey(int newKey);
+
+	void deleteKey(int index);
+};
+
+MinHeap::MinHeap(int newCapacity) {
+	capacity = newCapacity;
+	size = 0;
+	p = new int[capacity];
+}
+
+void MinHeap::insertKey(int newKey) {
+	if (size == capacity) {
+		cout << endl << "Heap is full!!" << endl;
+		return;
+	}
+	size++;
+	int index = size - 1;
+	p[index] = newKey;
+
+	while (index != 0 && p[parent(index)] > p[index]) {
+		swap(&p[index], &p[parent(index)]);
+		index = parent(index);
+	}
+}
+
+int MinHeap::extractMin() {
+	if (size <= 0) {
+		return INT_MAX;
+	}
+	if (size == 1) {
+		size--;
+		return p[0];
+	}
+
+	int root = p[0];
+	p[0] = p[size - 1];
+	size--;
+	MinHeapify(0);
+
+	return root;
+}
+
+void MinHeap::decreaseKey(int index, int newNum) {
+	p[index] = newNum;
+	while (index != 0 && p[parent(index)] > p[index]) {
+		swap(&p[index], &p[parent(index)]);
+		index = parent(index);
+	}
+}
+
+void MinHeap::deleteKey(int index) {
+	decreaseKey(index, INT_MIN);
+	extractMin();
+}
+
+
+void MinHeap::MinHeapify(int index) {
+	int ls = left(index);
+	int rs = right(index);
+	int minimum = index;
+	if (ls < size && p[ls] < p[index]) {
+		minimum = ls;
+	}
+	if (rs < size && p[rs] < p[minimum]) {
+		minimum = rs;
+	}
+	if (minimum != index) {
+		swap(&p[index], &p[minimum]);
+		MinHeapify(minimum);
+	}
+}
+
+void swap(int* x, int* y) {
+	int temp = *x;
+	*x = *y;
+	*y = temp;
+}
+int main() {
+	MinHeap h(5);
+
+}
