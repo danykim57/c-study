@@ -1,0 +1,24 @@
+#include<iostream>
+using namespace std;
+
+#define ROW 9
+#define COL 10
+typedef pair<int, int> Pair;
+
+typedef pair<double, pair<int, int>> pPair;
+
+struct cell {
+	int parent_i, parent_j;
+	double f, g, h;
+};
+
+bool isValid(int row, int col) {
+	return (row >= 0) && (row < ROW) && (col >= 0) && (col < COL);
+}
+
+bool isDesetination(int row, int col, Pair dest) {
+	if (row == dest.first && col == dest.second)
+		return true;
+	else
+		return false;
+}
