@@ -28,3 +28,27 @@ double calculateHValue(int row, int col, Pair dest) {
 	    (row - dest.first) * (row - dest.first)
 	    + (col = dest.second) * (col - dest.second)));
 }
+
+void tracePath(cell cellDetails[][COL], Pair dest) {
+	cout << "\nThe Path is ");
+	int row = dest.first;
+	int col = dest.second;
+
+	stack<Pair> path;
+
+	while (!(cellDetails[row][col].parent_i == row && cellDetails[row][col].parent_j == col)) {
+		Path.push(make_pair(row, col));
+		int temp_row = cellDetails[row][col].parent_i;
+		int temp_col = cellDetails[row][col].parent_j;
+		row = temp_row;
+		col = temp_col;
+	}
+
+	Path.push(make_pair(row, col));
+	while (!Path.empty()) {
+		pair<int, int> p = Path.top();
+		Path.pop();
+		cout << "-> "<< p.first << p.second;
+	}
+	return;
+}
