@@ -52,3 +52,25 @@ void tracePath(cell cellDetails[][COL], Pair dest) {
 	}
 	return;
 }
+
+void aStarSearch(int grid[][COL], Pair src, Pair dest) {
+	if (isValid(src.first, src.second) == false) {
+		cout << "Source is invalid\n";
+		return;
+	}
+
+	if (isValid(dest.first, dest.second) == false) {
+		cout << "Destination is invalid\n";
+		return;
+	}
+
+	if (isUnBlocked(grid, src.first, src.second) == false || isUnBlocked(grid, dest.first, dest.second) == false) {
+		cout << "Source or the destination is blocked\n";
+		return;
+	}
+
+	if (isDestination(src.first, src.second, dest) == true) {
+		cout << "We are already at the destination\n";
+		return;
+	}
+}
