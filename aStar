@@ -73,4 +73,22 @@ void aStarSearch(int grid[][COL], Pair src, Pair dest) {
 		cout << "We are already at the destination\n";
 		return;
 	}
+	
+	bool closedList[ROW][COL];
+	memset(closedList, false, sizeof(closedList));
+
+	cell cellDetails[ROW][COL];
+
+	int i, j;
+
+	for (i = 0; i < ROW; i++) {
+		for (j = 0; j < COL; j++) {
+			cellDetails[i][j].f = FLT_MAX;
+			cellDetails[i][j].g = FLT_MAX;
+			cellDetails[i][j].h = FLT_MAX;
+			cellDetails[i][j].parent_i = -1;
+			cellDetails[i][j].parent_j = -1;
+
+		}
+	}
 }
