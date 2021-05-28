@@ -91,4 +91,20 @@ void aStarSearch(int grid[][COL], Pair src, Pair dest) {
 
 		}
 	}
+	
+	i = src.first, j = src.second;
+	cellDetails[i][j].f = 0.0;
+	cellDetails[i][j].g = 0.0;
+	cellDetails[i][j].h = 0.0;
+	cellDetails[i][j].parent_i = i;
+	cellDetails[i][j].parent_j = j;
+
+	set<pPair> openList;
+	openList.insert(make_pair(0.0, make_pair(i, j)));
+
+	bool foundDest = false;
+
+	while (!openList.empty()) {
+		pPair p = *openList.begin();
+	}
 }
