@@ -106,5 +106,38 @@ void aStarSearch(int grid[][COL], Pair src, Pair dest) {
 
 	while (!openList.empty()) {
 		pPair p = *openList.begin();
+		openList.erase(openList.begin());
+
+		i = p.second.first;
+		j = p.second.second;
+		closedList[i][j] = true;
+
+		double gNew, hNew, fNew;
+
+		if (isValid(i - 1, j) == true) {
+			if (isDestination(i - 1, j, dest) == true) {
+				cellDetails[i - 1][j].parent_i = i;
+				cellDetails[i - 1][j].parent_j = j;
+				cout << "The destination cell is found\n";
+				tracePath(cellDetails, dest);
+				foundDest = true;
+				return;
+			}
+			else if (closedList[i - 1][j] == false && isUnBlocked(grid, i - 1, j) == true) {
+				gNew = cellDetails[i][j].g = 1.0;
+				hNew = calculateHValue(i - 1, j, dest);
+				fNew = gNew + hNew;
+
+				if (cellDetails[i - 1][j].f == FLT_MAX || cellDetails[i - 1][j].f > fNew) {
+					openList.insert(make_pair(fNew, make_pair(i - 1, j)));
+
+					cellDetails[i - 1][j].f = fNew;
+					cellDetails[i - 1][j].g = gNew;
+					cellDetails[i - 1][j].h = hNew;
+					cellDetails[i - 1][j].parent_i = i;
+					cellDetails[i - 1][j].parent_j = j;
+				}
+
+			}
 	}
 }
