@@ -1,4 +1,6 @@
 #include<iostream>
+#include<stack>
+#include<set>
 using namespace std;
 
 #define ROW 9
@@ -16,7 +18,14 @@ bool isValid(int row, int col) {
 	return (row >= 0) && (row < ROW) && (col >= 0) && (col < COL);
 }
 
-bool isDesetination(int row, int col, Pair dest) {
+bool isUnBlocked(int grid[][COL], int row, int col) {
+	if (grid[row][col] == 1)
+		return true;
+	else
+		return false;
+}
+
+bool isDestination(int row, int col, Pair dest) {
 	if (row == dest.first && col == dest.second)
 		return true;
 	else
@@ -24,31 +33,31 @@ bool isDesetination(int row, int col, Pair dest) {
 }
 
 double calculateHValue(int row, int col, Pair dest) {
-        return ((double)sqrt(
-	    (row - dest.first) * (row - dest.first)
-	    + (col = dest.second) * (col - dest.second)));
+	return ((double)sqrt(
+		(row - dest.first) * (row - dest.first)
+		+ (col = dest.second) * (col - dest.second)));
 }
 
 void tracePath(cell cellDetails[][COL], Pair dest) {
-	cout << "\nThe Path is ");
+	cout << "\nThe Path is ";
 	int row = dest.first;
 	int col = dest.second;
 
 	stack<Pair> path;
 
 	while (!(cellDetails[row][col].parent_i == row && cellDetails[row][col].parent_j == col)) {
-		Path.push(make_pair(row, col));
+		path.push(make_pair(row, col));
 		int temp_row = cellDetails[row][col].parent_i;
 		int temp_col = cellDetails[row][col].parent_j;
 		row = temp_row;
 		col = temp_col;
 	}
 
-	Path.push(make_pair(row, col));
-	while (!Path.empty()) {
-		pair<int, int> p = Path.top();
-		Path.pop();
-		cout << "-> "<< p.first << p.second;
+	path.push(make_pair(row, col));
+	while (!path.empty()) {
+		pair<int, int> p = path.top();
+		path.pop();
+		cout << "-> " << p.first << p.second;
 	}
 	return;
 }
@@ -73,7 +82,7 @@ void aStarSearch(int grid[][COL], Pair src, Pair dest) {
 		cout << "We are already at the destination\n";
 		return;
 	}
-	
+
 	bool closedList[ROW][COL];
 	memset(closedList, false, sizeof(closedList));
 
@@ -91,7 +100,7 @@ void aStarSearch(int grid[][COL], Pair src, Pair dest) {
 
 		}
 	}
-	
+
 	i = src.first, j = src.second;
 	cellDetails[i][j].f = 0.0;
 	cellDetails[i][j].g = 0.0;
@@ -139,8 +148,8 @@ void aStarSearch(int grid[][COL], Pair src, Pair dest) {
 				}
 
 			}
-	}
-	if (isValid(i + 1, j) == true) {
+		}
+		if (isValid(i + 1, j) == true) {
 			if (isDestination(i + 1, j, dest) == true) {
 				cellDetails[i + 1][j].parent_i = i;
 				cellDetails[i + 1][j].parent_j = j;
@@ -273,4 +282,6 @@ void aStarSearch(int grid[][COL], Pair src, Pair dest) {
 				}
 
 			}
+		}
+	}
 }
