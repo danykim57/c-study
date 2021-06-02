@@ -1,0 +1,29 @@
+#include<iostream>
+#ifdef _WIN32
+#include<windows.h>
+#else
+#include <unistd.h>
+#endif
+#include<cstdlib>
+using namespace std;
+
+// This does not work in the multi thread case
+//Supply/demander
+class buffer {
+	int bufferCount = 0;
+	char buffer[500];
+	void supplyThread(char input) {
+		bool done = false;
+		while (!done) {
+			if (bufferCount < 500) {
+				bufferCount++;
+				buffer[bufferCount - 1] = input;
+				done = true;
+			}
+			else {
+				sleep(500);
+				done = false;
+			}
+		}
+	}
+};
