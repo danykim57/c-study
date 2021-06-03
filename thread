@@ -26,4 +26,19 @@ class buffer {
 			}
 		}
 	}
+
+	char demandThread() {
+		bool done = false;
+		while (!done) {
+			if (bufferCount > 0) {
+				bufferCount--;
+				return buffer[bufferCount];
+				done = true;
+			}
+			else {
+				sleep(500);
+				done = false;
+			}
+		}
+	}
 };
