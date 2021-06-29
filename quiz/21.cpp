@@ -26,8 +26,12 @@ int main(int argc, char** argv){
 	    }
 	}
 	printf("%d %d\n", A, B);
-	if(lw==1) printf("A\n");
-	else if(lw==0) printf("D\n");
+	if(A==B){
+		if(lw==0) printf("D\n");
+		else if(lw==1) printf("A\n");
+		else printf("B\n");
+	}
+	else if(A>B) printf("A\n");
 	else printf("B\n");
 	return 0;
 }
