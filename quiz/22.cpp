@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <vector>
-int a[10], b[10];
 int main(int argc, char** argv){
 	//freopen("input.txt", "rt", stdin);
 	int n, k, i, sum=0, max;
