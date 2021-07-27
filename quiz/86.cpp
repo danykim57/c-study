@@ -1,13 +1,12 @@
-#include<stdio.h>
-#include<vector>
-#include<algorithm>
-vecotr<pair<int, int> > pz;
+#include<bits/stdc++.h>
+using namespace std;
+vector<pair<int, int> > pz;
 vector<pair<int, int> > hs;
 int ch[20], m, res=2147000000, dis, sum=0;
 void DFS(int L, int s){
 	if(L==m){
 		sum=0;
-		for(int i=0; i<hs.size()); i++){
+		for(int i=0; i<hs.size(); i++){
 			int x1=hs[i].first;
 			int y1=hs[i].second;
 			dis=2147000000;
