@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+	ios_base::sync_with_stdio(false);
+	ifstream cin;
+	cin.open("input.txt");
+	map<char, int> ch;
+	map<char, int>::iterator it;
+	char a[100];
+	cin >> a;
+	for (int i = 0; a[i] != '\0'; i++) {
+		ch[a[i]]++;
+	}
+	int max = -2147000000;
+	char res;	
+	for (it = ch.begin(); it != ch.end(); it++) {
+		cout << it->first << ' ' << it->second << endl;
+		if (it->second > max) {
+			max = it->second;
+			res = it->first;
+		}
+	}
+	cout << res << " : " << max << endl;
+	return 0;
+}
