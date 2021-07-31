@@ -1,6 +1,4 @@
 #include<stdio.h>
-#include<vector>
-#include<algorithm>
 using namespace std;
 
 void D(int v){
@@ -13,8 +11,6 @@ void D(int v){
 }
 
 int main(int argc, char** argv){
-	//freopen("input.txt", "rt", stdin);
     D(1);
     return 0;
-	return 0;
 }
