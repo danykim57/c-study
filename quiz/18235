@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n, a, b, cnt = 1, day = 0;
+bool visitedA[2][500001] = {};
+bool visitedB[2][500001] = {};
+int main(){
+	ios::sync_with_stdio(false);
+	freopen("input.txt", "rt", stdin);
+	cin >> n >> a >> b;
+	
+	visitedA[0][a] = 1;
+	visitedB[0][b] = 1;
+	do {
+		int today = day % 2;
+		int nextDay = (today + 1) % 2;
+		bool flag = false;
+		for (int i = 1; i <= n; i++) {
+			if (visitedA[today][i] && visitedB[today][i]) {
+			    flag = true;
+			    break;
+			}
+		}
+		
+		if (flag) {
+			cout << day << '\n';
+			break;
+		}
+		
+		for (int i=1; i<= n; i++){
+			visitedA[nextDay][i] = 0;
+			visitedB[nextDay][i] = 0;
+		}
+		
+		for(int i=1; i<=n; i++) {
+			int nextCnt1 = i + cnt, nextCnt2 = i - cnt;
+			if (visitedA[today][i]) {
+				if (0 < nextCnt1 && nextCnt1 <= n) visitedA[nextDay][nextCnt1] = 1;
+				if (0 < nextCnt2 && nextCnt2 <= n) visitedA[nextDay][nextCnt2] = 1;
+			}
+			if (visitedB[today][i]) {
+				if (0 < nextCnt1 && nextCnt1 <= n) visitedB[nextDay][nextCnt1] = 1;
+				if (0 < nextCnt2 && nextCnt2 <= n) visitedB[nextDay][nextCnt2] = 1;
+			}
+		}
+		cnt <<= 1;
+		day ++;
+	} while(cnt <= 500000);
+	if (cnt > 500000) cout << -1;
+    return 0;
+}
